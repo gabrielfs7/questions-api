@@ -1,4 +1,4 @@
 <?php
 
 define('APP_ROOT', __DIR__ . '/../');
-define('APP_ENV', 'testing');
+define('APP_ENV', 'test');

@@ -24,8 +24,7 @@ class CreateQuestionAction
         CreateQuestionRequestValidator $questionRequestValidator,
         CreateQuestionService $createQuestionService,
         QuestionNormalizer $questionNormalizer
-    )
-    {
+    ) {
         $this->questionRequestValidator = $questionRequestValidator;
         $this->createQuestionService = $createQuestionService;
         $this->questionNormalizer = $questionNormalizer;

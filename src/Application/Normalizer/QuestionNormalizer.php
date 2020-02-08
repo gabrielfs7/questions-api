@@ -16,8 +16,7 @@ class QuestionNormalizer extends AbstractNormalizer
     public function __construct(
         ChoiceCollectionNormalizer $choiceCollectionNormalizer,
         TranslatorInterface $translator
-    )
-    {
+    ) {
         $this->choiceCollectionNormalizer = $choiceCollectionNormalizer;
         $this->translator = $translator;
     }

@@ -20,8 +20,7 @@ trait AppSupportTrait
         array $query = null,
         array $body = [],
         array $headers = []
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         $uri = (new UriFactory())
             ->createUri($path . '?' . ($query ? http_build_query($query) : null));
 

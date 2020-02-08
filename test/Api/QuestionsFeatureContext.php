@@ -34,8 +34,7 @@ class QuestionsFeatureContext implements Context
         ?string $text,
         ?string $createdAt,
         ?string $choices
-    )
-    {
+    ) {
         $choices = explode(',', (string)$choices);
         $choice1 = $choices[0] ?? null;
         $choice2 = $choices[1] ?? null;
@@ -68,8 +67,7 @@ class QuestionsFeatureContext implements Context
         string $choice1,
         string $choice2,
         string $choice3
-    )
-    {
+    ) {
         $this->currentQuestion = $this->createQuestion($text, $createdAt, $choice1, $choice2, $choice3);
     }
 

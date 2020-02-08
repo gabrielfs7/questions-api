@@ -2,6 +2,12 @@
 
 A simple API to handle questions.
 
+## Features
+
+* Create new questions and related choices.
+* List questions.
+* Translated listed question by a valid ISO-639-1 code.
+
 ## Install
 
 ```

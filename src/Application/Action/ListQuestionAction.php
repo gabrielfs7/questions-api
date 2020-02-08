@@ -24,8 +24,7 @@ class ListQuestionAction
         ListQuestionRequestValidator $listQuestionRequestValidator,
         ListQuestionService $listQuestionService,
         QuestionCollectionNormalizer $questionCollectionNormalizer
-    )
-    {
+    ) {
         $this->listQuestionRequestValidator = $listQuestionRequestValidator;
         $this->listQuestionService = $listQuestionService;
         $this->questionCollectionNormalizer = $questionCollectionNormalizer;

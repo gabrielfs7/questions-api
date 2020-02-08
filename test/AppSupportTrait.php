@@ -66,7 +66,7 @@ trait AppSupportTrait
     private function getApp(): App
     {
         if (!$this->app) {
-            require_once __DIR__ . '/../bootstrap.php';
+            require_once __DIR__ . '/bootstrap.php';
 
             /** @var App $app */
             $app = include __DIR__ . '/../app.php';

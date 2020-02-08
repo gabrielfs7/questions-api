@@ -2,7 +2,7 @@
 
 A simple API to handle questions.
 
-### Install
+## Install
 
 ```
 composer install
@@ -22,15 +22,29 @@ Access the application [here](http://localhost:8888).
 
 View it using [Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/gabrielfs7/questions-api/master/doc/openapi.yaml).
 
-### Run tests
+## Configuration
+
+The application supports two different types of storage, CSV or JSON. To switch between them you just need to change this configuration:
+
+```php
+[
+    'settings.dataSource.type' => 'csv',
+];
+```
+
+Configurations per environment are located [here](/config). 
+
+## Tests
+
+The application uses BDD tests. You can run them by:
 
 ```
 bin/behat
 ```
 
-### Code Standards
+## Standards
 
-Run code fixer:
+Run the php-cs-fixer to make sure application code will follow the standards.
 
 ```
 bin/php-cs-fixer fix --verbose src/

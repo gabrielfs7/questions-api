@@ -8,7 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Questions\Infrastructure\Http\RequestParserInterface;
 
-class ParseRequestMiddleware
+class ParseRequestMiddleware implements MiddlewareInterface
 {
     public const PARSED_REQUEST_DATA = 'parsedRequestData';
 

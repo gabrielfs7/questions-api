@@ -7,7 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class QuestionSaveMiddleware
+class QuestionSaveMiddleware implements MiddlewareInterface
 {
     /** @var QuestionRequestValidator */
     private $questionRequestValidator;

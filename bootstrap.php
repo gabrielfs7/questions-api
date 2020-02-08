@@ -1,6 +1,6 @@
 <?php
 
 define('APP_ROOT', __DIR__);
-define('APP_ENV', $_SERVER['APP_ENV'] ?? $_ENV['APP_ENV'] ?? 'dev');
+define('APP_ENV', 'test');
 
 include __DIR__ . '/vendor/autoload.php';

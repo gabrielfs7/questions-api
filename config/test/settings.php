@@ -5,10 +5,10 @@ return [
     'settings.dataSource.type' => 'json',
     'settings.dataSource' => [
         'csv' => [
-            'path' => __DIR__ . '/../../db/questions.csv',
+            'path' => __DIR__ . '/../../test/resources/questions.csv',
         ],
         'json' => [
-            'path' => __DIR__ . '/../../db/questions.json',
+            'path' => __DIR__ . '/../../test/resources/questions.json',
         ]
     ],
 ];

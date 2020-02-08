@@ -9,7 +9,7 @@ use Slim\App;
 use Slim\Psr7\Factory\ServerRequestFactory;
 use Slim\Psr7\Factory\UriFactory;
 
-trait AppTestTrait
+trait AppSupportTrait
 {
     /** @var App */
     private $app;
@@ -38,12 +38,6 @@ trait AppTestTrait
         return $this->getApp()->handle($request);
     }
 
-    protected function initDatabase(): void
-    {
-        $this->initializeFile(__DIR__ . '/resources/questions.json');
-        $this->initializeFile(__DIR__ . '/resources/questions.csv');
-    }
-
     protected function assertJsonResponseContains(ResponseInterface $response, array $expected): void
     {
         $actual = $this->getParsedJsonResponse($response);
@@ -69,26 +63,19 @@ trait AppTestTrait
         return $jsonBody;
     }
 
-    private function initializeFile(string $file): void
-    {
-        $resource = fopen($file, 'w+');
-        ftruncate($resource, filesize($file));
-        fclose($resource);
-    }
-
     private function getApp(): App
     {
-        if ($this->app) {
-            return $this->app;
+        if (!$this->app) {
+            require_once __DIR__ . '/../bootstrap.php';
+
+            /** @var App $app */
+            $app = include __DIR__ . '/../app.php';
+
+            $this->app = $app;
+
+            include APP_ROOT . '/config/routes.php';
         }
 
-        require_once __DIR__ . '/../bootstrap.php';
-
-        /** @var App $app */
-        $app = include __DIR__ . '/../app.php';
-
-        include APP_ROOT . '/config/routes.php';
-
-        return $this->app = $app;
+        return $this->app;
     }
 }

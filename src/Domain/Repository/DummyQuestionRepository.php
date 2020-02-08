@@ -2,6 +2,7 @@
 
 namespace Questions\Domain\Repository;
 
+use Questions\Domain\Entity\Question;
 use Questions\Domain\Entity\QuestionCollection;
 
 class DummyQuestionRepository implements QuestionRepositoryInterface
@@ -11,7 +12,7 @@ class DummyQuestionRepository implements QuestionRepositoryInterface
         return new QuestionCollection();
     }
 
-    public function saveAll(QuestionCollection $collection): void
+    public function create(Question $question): void
     {
     }
 }

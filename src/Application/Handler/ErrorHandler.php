@@ -26,8 +26,7 @@ class ErrorHandler
         bool $displayErrorDetails,
         bool $logErrors,
         bool $logErrorDetails
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         $statusCode = 500;
         $code = 0;
         $message = $displayErrorDetails ? $exception->getMessage() : 'Internal Error';

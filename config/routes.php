@@ -12,4 +12,5 @@ $container = $app->getContainer();
 $app->add($container->get(ParseRequestMiddleware::class));
 
 $app->get('/questions', ListQuestionsAction::class);
-$app->post('/questions', CreateQuestionAction::class)->add($container->get(QuestionSaveMiddleware::class));
+$app->post('/questions', CreateQuestionAction::class)
+    ->add($container->get(QuestionSaveMiddleware::class));

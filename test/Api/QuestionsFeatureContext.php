@@ -4,11 +4,13 @@ namespace Questions\Test\Api;
 
 use Behat\Behat\Context\Context;
 use Psr\Http\Message\ResponseInterface;
-use Questions\Test\AppTestTrait;
+use Questions\Test\AppSupportTrait;
+use Questions\Test\DbSupportTrait;
 
 class QuestionsFeatureContext implements Context
 {
-    use AppTestTrait;
+    use AppSupportTrait;
+    use DbSupportTrait;
 
     /** @var string */
     protected $lang;
@@ -21,7 +23,7 @@ class QuestionsFeatureContext implements Context
 
     public function __construct()
     {
-        $this->initDatabase();
+        self::initDatabase();
     }
 
     /**
@@ -110,17 +112,17 @@ class QuestionsFeatureContext implements Context
     private function createQuestion(string $text, string $createdAt, string $choice1, string $choice2, string $choice3)
     {
         return [
-            "text" => $text,
-            "createdAt" => $createdAt,
-            "choices" => [
+            'text' => $text,
+            'createdAt' => $createdAt,
+            'choices' => [
                 [
-                    "text" => $choice1
+                    'text' => $choice1
                 ],
                 [
-                    "text" => $choice2
+                    'text' => $choice2
                 ],
                 [
-                    "text" => $choice3
+                    'text' => $choice3
                 ],
             ]
         ];

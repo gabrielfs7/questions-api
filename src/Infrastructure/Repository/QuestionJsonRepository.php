@@ -36,6 +36,9 @@ class QuestionJsonRepository implements QuestionRepositoryInterface
 
     public function create(Question $question): void
     {
+        /**
+         * @TODO Proper file handling should be implemented in case file is locked or write permission errors.
+         */
         $data = $this->getFileContent();
 
         array_push($data, $this->questionMapper->toArray($question));
@@ -45,6 +48,9 @@ class QuestionJsonRepository implements QuestionRepositoryInterface
 
     private function getFileContent(): array
     {
+        /**
+         * @TODO Proper file handling should be implemented in case file is locked or read permission errors.
+         */
         $content = file_get_contents($this->filePath);
 
         return json_decode($content, true);

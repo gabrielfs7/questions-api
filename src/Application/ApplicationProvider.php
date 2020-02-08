@@ -71,7 +71,7 @@ class ApplicationProvider implements ContainerProviderInterface
     {
         return [
             ListQuestionRequestValidator::class => static function (ContainerInterface $container): RequestValidatorInterface {
-                return new ListQuestionRequestValidator($container->get('settings.languages'));
+                return new ListQuestionRequestValidator($container->get('settings.translation.languages'));
             },
 
             CreateQuestionRequestValidator::class => static function (ContainerInterface $container): RequestValidatorInterface {

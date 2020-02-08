@@ -30,6 +30,8 @@ View it using [Swagger Editor](https://editor.swagger.io/?url=https://raw.github
 
 ## Configuration
 
+### Setup storage Type
+
 The application supports two different types of storage, CSV or JSON. To switch between them you just need to change this configuration:
 
 ```php
@@ -37,6 +39,38 @@ The application supports two different types of storage, CSV or JSON. To switch 
     'settings.dataSource.type' => 'csv',
 ];
 ```
+
+### Setup translation
+
+The application is using [Stichoza/google-translate-php](https://github.com/Stichoza/google-translate-php) for translation. It is possible to customize timeout settings. If there is a timeout, the original text will be returned.
+
+```php
+[
+    'settings.translation.timeoutInSeconds' => 3,
+];
+``` 
+
+You can also use your custom translation class:
+
+```php
+use Questions\Infrastructure\Translation\TranslatorInterface;
+
+class MyTranslator implements TranslatorInterface
+{
+    public function translate(string $text, string $toLang): string
+    {
+         //Custom translator logic...
+    }
+}
+```
+
+And then change the class identifier:
+
+```php
+[
+    'settings.translation.class' => MyTranslator::class,
+];
+``` 
 
 Configurations per environment are located [here](/config). 
 

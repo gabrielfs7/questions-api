@@ -7,16 +7,27 @@ use Throwable;
 
 class Translator implements TranslatorInterface
 {
-    private const LANG_DEFAULT = 'en';
+    /** @var GoogleTranslate */
+    private $googleTranslate;
+
+    public function __construct(GoogleTranslate $googleTranslate)
+    {
+        $this->googleTranslate = $googleTranslate;
+    }
 
     public function translate(string $text, string $toLang): string
     {
         try {
-            if ($toLang === self::LANG_DEFAULT) {
+            /**
+             * @TODO A cache layer and a fallback option should be developed along with a error logging mechanism.
+             */
+            if ($toLang === TranslatorInterface::LANG_DEFAULT) {
                 return $text;
             }
 
-            return GoogleTranslate::trans($text, $toLang, self::LANG_DEFAULT);
+            return $this->googleTranslate
+                ->setTarget($toLang)
+                ->translate($text);
         } catch (Throwable $exception) {
             return $text;
         }

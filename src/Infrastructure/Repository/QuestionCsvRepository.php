@@ -36,6 +36,9 @@ class QuestionCsvRepository implements QuestionRepositoryInterface
 
     public function create(Question $question): void
     {
+        /**
+         * @TODO Proper file handling should be implemented in case file is locked or write permission errors.
+         */
         $handler = fopen($this->filePath, 'r+');
 
         fseek($handler, 0, SEEK_END);
@@ -45,6 +48,9 @@ class QuestionCsvRepository implements QuestionRepositoryInterface
 
     private function getFileContent(): iterable
     {
+        /**
+         * @TODO Proper file handling should be implemented in case file is locked or read permission errors.
+         */
         $handler = fopen($this->filePath, 'r');
 
         $headerSkipped = false;

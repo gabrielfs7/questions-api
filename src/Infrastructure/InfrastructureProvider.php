@@ -2,6 +2,7 @@
 
 namespace Questions\Infrastructure;
 
+use GuzzleHttp\RequestOptions;
 use Psr\Container\ContainerInterface;
 use Questions\Domain\Repository\QuestionRepositoryInterface;
 use Questions\Infrastructure\DI\ContainerProviderInterface;
@@ -12,7 +13,9 @@ use Questions\Infrastructure\Mapper\QuestionCsvMapper;
 use Questions\Infrastructure\Mapper\QuestionJsonMapper;
 use Questions\Infrastructure\Repository\QuestionCsvRepository;
 use Questions\Infrastructure\Repository\QuestionJsonRepository;
+use Questions\Infrastructure\Translation\Translator;
 use Questions\Infrastructure\Translation\TranslatorInterface;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class InfrastructureProvider implements ContainerProviderInterface
 {
@@ -29,8 +32,22 @@ class InfrastructureProvider implements ContainerProviderInterface
     private function getTranslators(): array
     {
         return [
+            GoogleTranslate::class => static function (ContainerInterface $container): GoogleTranslate {
+                return new GoogleTranslate(
+                    TranslatorInterface::LANG_DEFAULT,
+                    TranslatorInterface::LANG_DEFAULT,
+                    [
+                        RequestOptions::CONNECT_TIMEOUT => $container->get('settings.translation.timeoutInSeconds')
+                    ]
+                );
+            },
+
+            Translator::class => static function (ContainerInterface $container): TranslatorInterface {
+                return new Translator($container->get(GoogleTranslate::class));
+            },
+
             TranslatorInterface::class => static function (ContainerInterface $container): TranslatorInterface {
-                return $container->get($container->get('settings.translatorClass'));
+                return $container->get($container->get('settings.translation.class'));
             },
         ];
     }

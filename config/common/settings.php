@@ -4,8 +4,9 @@ use Questions\Infrastructure\Translation\Translator;
 
 return [
     'settings.displayErrorDetails' => false,
-    'settings.translatorClass' => Translator::class,
-    'settings.languages' => [
+    'settings.translation.class' => Translator::class,
+    'settings.translation.timeoutInSeconds' => 1,
+    'settings.translation.languages' => [
         'ab' => 'Abkhazian',
         'aa' => 'Afar',
         'af' => 'Afrikaans',

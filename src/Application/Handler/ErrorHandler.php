@@ -2,6 +2,7 @@
 
 namespace Questions\Application\Handler;
 
+use JsonException;
 use Questions\Application\Request\Error\InvalidRequestException;
 use Questions\Infrastructure\Http\JsonResponseAdapter;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -31,7 +32,7 @@ class ErrorHandler
         $code = 0;
         $message = $displayErrorDetails ? $exception->getMessage() : 'Internal Error';
 
-        if ($exception instanceof InvalidRequestException) {
+        if ($exception instanceof InvalidRequestException || $exception instanceof JsonException) {
             $statusCode = 400;
             $code = $exception->getCode();
             $message = $exception->getMessage();

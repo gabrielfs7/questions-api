@@ -7,7 +7,7 @@ use Questions\Domain\Entity\QuestionCollection;
 
 class DummyQuestionRepository implements QuestionRepositoryInterface
 {
-    public function findAll(array $criteria = []): QuestionCollection
+    public function findAll(): QuestionCollection
     {
         return new QuestionCollection();
     }

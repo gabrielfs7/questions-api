@@ -8,7 +8,7 @@ use Questions\Domain\Entity\Question;
 use Questions\Domain\Repository\QuestionRepositoryInterface;
 use Questions\Infrastructure\Mapper\QuestionMapperInterface;
 
-class CreateQuestionService
+class CreateQuestionService implements CreateQuestionServiceInterface
 {
     /** @var QuestionRepositoryInterface */
     private $repository;

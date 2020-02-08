@@ -5,7 +5,7 @@ namespace Questions\Application\Service;
 use Questions\Domain\Entity\QuestionCollection;
 use Questions\Domain\Repository\QuestionRepositoryInterface;
 
-class ListQuestionService
+class ListQuestionService implements ListQuestionServiceInterface
 {
     /** @var QuestionRepositoryInterface */
     private $questionRepository;

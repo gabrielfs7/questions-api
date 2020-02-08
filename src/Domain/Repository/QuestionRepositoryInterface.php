@@ -7,7 +7,7 @@ use Questions\Domain\Entity\QuestionCollection;
 
 interface QuestionRepositoryInterface
 {
-    public function findAll(array $criteria = []): QuestionCollection;
+    public function findAll(): QuestionCollection;
 
     public function create(Question $question): void;
 }

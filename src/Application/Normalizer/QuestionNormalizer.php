@@ -7,14 +7,14 @@ use Questions\Infrastructure\Translation\TranslatorInterface;
 
 class QuestionNormalizer extends AbstractNormalizer
 {
-    /** @var ChoiceCollectionNormalizer */
+    /** @var NormalizerInterface */
     private $choiceCollectionNormalizer;
 
     /** @var TranslatorInterface */
     private $translator;
 
     public function __construct(
-        ChoiceCollectionNormalizer $choiceCollectionNormalizer,
+        NormalizerInterface $choiceCollectionNormalizer,
         TranslatorInterface $translator
     ) {
         $this->choiceCollectionNormalizer = $choiceCollectionNormalizer;

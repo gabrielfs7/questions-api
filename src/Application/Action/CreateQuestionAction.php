@@ -2,35 +2,35 @@
 
 namespace Questions\Application\Action;
 
-use Questions\Application\Normalizer\QuestionNormalizer;
-use Questions\Application\Request\Validator\CreateQuestionRequestValidator;
-use Questions\Application\Service\CreateQuestionService;
+use Questions\Application\Normalizer\NormalizerInterface;
+use Questions\Application\Request\Validator\RequestValidatorInterface;
+use Questions\Application\Service\CreateQuestionServiceInterface;
 use Questions\Infrastructure\Http\JsonResponseAdapter;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class CreateQuestionAction
+class CreateQuestionAction implements ActionInterface
 {
-    /** @var CreateQuestionService */
-    private $createQuestionService;
-
-    /** @var QuestionNormalizer */
-    private $questionNormalizer;
-
-    /** @var CreateQuestionRequestValidator */
+    /** @var RequestValidatorInterface */
     private $questionRequestValidator;
 
+    /** @var CreateQuestionServiceInterface */
+    private $createQuestionService;
+
+    /** @var NormalizerInterface */
+    private $questionNormalizer;
+
     public function __construct(
-        CreateQuestionRequestValidator $questionRequestValidator,
-        CreateQuestionService $createQuestionService,
-        QuestionNormalizer $questionNormalizer
+        RequestValidatorInterface $questionRequestValidator,
+        CreateQuestionServiceInterface $createQuestionService,
+        NormalizerInterface $questionNormalizer
     ) {
         $this->questionRequestValidator = $questionRequestValidator;
         $this->createQuestionService = $createQuestionService;
         $this->questionNormalizer = $questionNormalizer;
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $uriParams): ResponseInterface
     {
         $this->questionRequestValidator->validate($request);
 

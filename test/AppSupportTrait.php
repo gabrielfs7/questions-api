@@ -41,7 +41,7 @@ trait AppSupportTrait
     {
         $actual = $this->getParsedJsonResponse($response);
 
-        Assert::assertEquals(json_encode($expected, JSON_OBJECT_AS_ARRAY), json_encode($actual, JSON_OBJECT_AS_ARRAY));
+        Assert::assertEquals(json_encode($expected), json_encode($actual));
     }
 
     protected function assertResponseStatusCode(ResponseInterface $response, int $statusCode): void

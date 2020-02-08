@@ -2,28 +2,28 @@
 
 namespace Questions\Application\Action;
 
-use Questions\Application\Normalizer\QuestionCollectionNormalizer;
-use Questions\Application\Request\Validator\ListQuestionRequestValidator;
-use Questions\Application\Service\ListQuestionService;
+use Questions\Application\Normalizer\NormalizerInterface;
+use Questions\Application\Request\Validator\RequestValidatorInterface;
+use Questions\Application\Service\ListQuestionServiceInterface;
 use Questions\Infrastructure\Http\JsonResponseAdapter;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class ListQuestionAction
+class ListQuestionAction implements ActionInterface
 {
-    /** @var ListQuestionRequestValidator */
+    /** @var RequestValidatorInterface */
     private $listQuestionRequestValidator;
 
-    /** @var ListQuestionService */
+    /** @var ListQuestionServiceInterface */
     private $listQuestionService;
 
-    /** @var QuestionCollectionNormalizer */
+    /** @var NormalizerInterface */
     private $questionCollectionNormalizer;
 
     public function __construct(
-        ListQuestionRequestValidator $listQuestionRequestValidator,
-        ListQuestionService $listQuestionService,
-        QuestionCollectionNormalizer $questionCollectionNormalizer
+        RequestValidatorInterface $listQuestionRequestValidator,
+        ListQuestionServiceInterface $listQuestionService,
+        NormalizerInterface $questionCollectionNormalizer
     ) {
         $this->listQuestionRequestValidator = $listQuestionRequestValidator;
         $this->listQuestionService = $listQuestionService;

@@ -21,7 +21,7 @@ class QuestionCsvRepository implements QuestionRepositoryInterface
         $this->questionMapper = $questionMapper;
     }
 
-    public function findAll(array $criteria = []): QuestionCollection
+    public function findAll(): QuestionCollection
     {
         $data = $this->getFileContent();
 

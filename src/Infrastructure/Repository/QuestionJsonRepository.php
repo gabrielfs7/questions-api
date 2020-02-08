@@ -21,7 +21,7 @@ class QuestionJsonRepository implements QuestionRepositoryInterface
         $this->questionMapper = $questionMapper;
     }
 
-    public function findAll(array $criteria = []): QuestionCollection
+    public function findAll(): QuestionCollection
     {
         $data = $this->getFileContent();
 
@@ -43,7 +43,7 @@ class QuestionJsonRepository implements QuestionRepositoryInterface
         file_put_contents($this->filePath, json_encode($data));
     }
 
-    private function getFileContent(): iterable
+    private function getFileContent(): array
     {
         $content = file_get_contents($this->filePath);
 

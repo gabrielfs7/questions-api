@@ -1,6 +1,14 @@
 <?php
 
+use Questions\Application\ApplicationProvider;
+use Questions\Domain\DomainProvider;
 use Questions\Infrastructure\Slim\AppFactory;
-use Questions\Infrastructure\DI\ContainerProvider;
+use Questions\Infrastructure\InfrastructureProvider;
 
-return (new AppFactory(new ContainerProvider()))->create();
+$providers = [
+    new ApplicationProvider(),
+    new DomainProvider(),
+    new InfrastructureProvider(),
+];
+
+return (new AppFactory(...$providers))->create();

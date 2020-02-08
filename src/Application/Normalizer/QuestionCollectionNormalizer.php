@@ -6,10 +6,10 @@ use Questions\Domain\Entity\QuestionCollection;
 
 class QuestionCollectionNormalizer extends AbstractNormalizer
 {
-    /** @var QuestionNormalizer */
+    /** @var NormalizerInterface */
     private $questionNormalizer;
 
-    public function __construct(QuestionNormalizer $questionNormalizer)
+    public function __construct(NormalizerInterface $questionNormalizer)
     {
         $this->questionNormalizer = $questionNormalizer;
     }

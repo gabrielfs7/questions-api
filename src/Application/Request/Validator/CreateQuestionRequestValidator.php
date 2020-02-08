@@ -7,6 +7,7 @@ use Questions\Application\Middleware\RequestParserMiddleware;
 use Questions\Application\Request\Error\InvalidRequestException;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 use Webmozart\Assert\Assert;
 
 class CreateQuestionRequestValidator implements RequestValidatorInterface
@@ -46,7 +47,7 @@ class CreateQuestionRequestValidator implements RequestValidatorInterface
             (new DateTimeImmutable($createdAt));
 
             return true;
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             return false;
         }
     }

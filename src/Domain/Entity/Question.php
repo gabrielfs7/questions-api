@@ -18,8 +18,8 @@ class Question
     public function __construct(string $text, ChoiceCollection $choices, DateTimeInterface $createdAt)
     {
         $this->text = $text;
-        $this->createdAt = $createdAt;
         $this->choices = $choices;
+        $this->createdAt = $createdAt;
     }
 
     public function getText(): string

@@ -10,7 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
-class ErrorHandler
+class ErrorHandler implements ErrorHandlerInterface
 {
     /** @var ResponseFactoryInterface */
     private $responseFactory;

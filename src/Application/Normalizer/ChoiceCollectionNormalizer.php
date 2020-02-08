@@ -6,10 +6,10 @@ use Questions\Domain\Entity\ChoiceCollection;
 
 class ChoiceCollectionNormalizer extends AbstractNormalizer
 {
-    /** @var ChoiceNormalizer */
+    /** @var NormalizerInterface */
     private $choiceNormalizer;
 
-    public function __construct(ChoiceNormalizer $choiceNormalizer)
+    public function __construct(NormalizerInterface $choiceNormalizer)
     {
         $this->choiceNormalizer = $choiceNormalizer;
     }

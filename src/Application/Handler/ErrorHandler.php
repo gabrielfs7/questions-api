@@ -8,6 +8,7 @@ use Questions\Infrastructure\Http\JsonResponseAdapter;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Slim\Exception\HttpNotFoundException;
 use Throwable;
 
 class ErrorHandler implements ErrorHandlerInterface
@@ -27,12 +28,21 @@ class ErrorHandler implements ErrorHandlerInterface
         bool $logErrors,
         bool $logErrorDetails
     ): ResponseInterface {
+        /**
+         * @TODO Proper error logging must be implemented
+         */
         $statusCode = 500;
         $code = 0;
         $message = $displayErrorDetails ? $exception->getMessage() : 'Internal Error';
 
         if ($exception instanceof InvalidRequestException || $exception instanceof JsonException) {
             $statusCode = 400;
+            $code = $exception->getCode();
+            $message = $exception->getMessage();
+        }
+
+        if ($exception instanceof HttpNotFoundException) {
+            $statusCode = 404;
             $code = $exception->getCode();
             $message = $exception->getMessage();
         }

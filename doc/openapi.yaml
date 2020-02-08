@@ -22,6 +22,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QuestionList'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
     post:
       summary: Creates a new question and associated choices (the number of associated choices must be exactly equal to 3)
       requestBody:
@@ -37,6 +43,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Question'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     QuestionList:
@@ -64,4 +76,15 @@ components:
       type: object
       properties:
         text:
+          type: string
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
           type: string

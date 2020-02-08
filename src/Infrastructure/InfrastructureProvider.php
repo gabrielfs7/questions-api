@@ -16,7 +16,26 @@ use Questions\Infrastructure\Translation\TranslatorInterface;
 
 class InfrastructureProvider implements ContainerProviderInterface
 {
+    private const DATA_SOURCE_PATH = 'dataSourcePath';
+
     public function register(): array
+    {
+        return $this->getTranslators()
+            + $this->getRequestParsers()
+            + $this->getRepositories()
+            + $this->getPaths();
+    }
+
+    private function getTranslators(): array
+    {
+        return [
+            TranslatorInterface::class => static function (ContainerInterface $container): TranslatorInterface {
+                return $container->get($container->get('settings.translatorClass'));
+            },
+        ];
+    }
+
+    private function getRequestParsers(): array
     {
         return [
             RequestParserInterface::class => static function (ContainerInterface $container): RequestParserInterface {
@@ -26,21 +45,33 @@ class InfrastructureProvider implements ContainerProviderInterface
                     ]
                 );
             },
+        ];
+    }
 
+    private function getRepositories(): array
+    {
+        return [
             QuestionCsvRepository::class => static function (ContainerInterface $container): QuestionRepositoryInterface {
-                $path = $container->get('settings.dataSource')[$container->get('settings.dataSource.type')]['path'];
-
-                return new QuestionCsvRepository($path, $container->get(QuestionCsvMapper::class));
+                return new QuestionCsvRepository(
+                    $container->get(self::DATA_SOURCE_PATH),
+                    $container->get(QuestionCsvMapper::class)
+                );
             },
 
             QuestionJsonRepository::class => static function (ContainerInterface $container): QuestionRepositoryInterface {
-                $path = $container->get('settings.dataSource')[$container->get('settings.dataSource.type')]['path'];
-
-                return new QuestionJsonRepository($path, $container->get(QuestionJsonMapper::class));
+                return new QuestionJsonRepository(
+                    $container->get(self::DATA_SOURCE_PATH),
+                    $container->get(QuestionJsonMapper::class)
+                );
             },
+        ];
+    }
 
-            TranslatorInterface::class => static function (ContainerInterface $container): TranslatorInterface {
-                return $container->get($container->get('settings.translatorClass'));
+    private function getPaths(): array
+    {
+        return [
+            self::DATA_SOURCE_PATH => static function (ContainerInterface $container): string {
+                return $container->get('settings.dataSource')[$container->get('settings.dataSource.type')]['path'];
             },
         ];
     }

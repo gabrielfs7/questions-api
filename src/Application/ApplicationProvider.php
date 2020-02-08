@@ -33,27 +33,17 @@ class ApplicationProvider implements ContainerProviderInterface
 {
     public function register(): array
     {
+        return $this->getRepositories()
+            + $this->getMiddlewares()
+            + $this->getValidators()
+            + $this->getNormalizers()
+            + $this->getServices()
+            + $this->getActions();
+    }
+
+    public function getRepositories(): array
+    {
         return [
-            CreateQuestionAction::class => static function (ContainerInterface $container): ActionInterface {
-                return new CreateQuestionAction(
-                    $container->get(CreateQuestionRequestValidator::class),
-                    $container->get(CreateQuestionServiceInterface::class),
-                    $container->get(QuestionNormalizer::class)
-                );
-            },
-
-            ListQuestionAction::class => static function (ContainerInterface $container): ActionInterface {
-                return new ListQuestionAction(
-                    $container->get(ListQuestionRequestValidator::class),
-                    $container->get(ListQuestionServiceInterface::class),
-                    $container->get(QuestionCollectionNormalizer::class)
-                );
-            },
-
-            RequestParserMiddleware::class => static function (ContainerInterface $container): MiddlewareInterface {
-                return new RequestParserMiddleware($container->get(RequestParserInterface::class));
-            },
-
             QuestionRepositoryInterface::class => static function (ContainerInterface $container): QuestionRepositoryInterface {
                 if ($container->get('settings.dataSource.type') === 'csv') {
                     return $container->get(QuestionCsvRepository::class);
@@ -65,18 +55,34 @@ class ApplicationProvider implements ContainerProviderInterface
 
                 return new DummyQuestionRepository();
             },
+        ];
+    }
 
-            CreateQuestionServiceInterface::class => static function (ContainerInterface $container): CreateQuestionServiceInterface {
-                return new CreateQuestionService(
-                    $container->get(QuestionRepositoryInterface::class),
-                    $container->get(QuestionJsonMapper::class)
-                );
+    private function getMiddlewares(): array
+    {
+        return [
+            RequestParserMiddleware::class => static function (ContainerInterface $container): MiddlewareInterface {
+                return new RequestParserMiddleware($container->get(RequestParserInterface::class));
+            },
+        ];
+    }
+
+    private function getValidators(): array
+    {
+        return [
+            ListQuestionRequestValidator::class => static function (ContainerInterface $container): RequestValidatorInterface {
+                return new ListQuestionRequestValidator($container->get('settings.languages'));
             },
 
-            ListQuestionServiceInterface::class => static function (ContainerInterface $container): ListQuestionServiceInterface {
-                return new ListQuestionService($container->get(QuestionRepositoryInterface::class));
+            CreateQuestionRequestValidator::class => static function (ContainerInterface $container): RequestValidatorInterface {
+                return new CreateQuestionRequestValidator();
             },
+        ];
+    }
 
+    private function getNormalizers(): array
+    {
+        return [
             QuestionCollectionNormalizer::class => static function (ContainerInterface $container): NormalizerInterface {
                 return new QuestionCollectionNormalizer($container->get(QuestionNormalizer::class));
             },
@@ -95,13 +101,42 @@ class ApplicationProvider implements ContainerProviderInterface
             ChoiceNormalizer::class => static function (ContainerInterface $container): NormalizerInterface {
                 return new ChoiceNormalizer($container->get(TranslatorInterface::class));
             },
+        ];
+    }
 
-            ListQuestionRequestValidator::class => static function (ContainerInterface $container): RequestValidatorInterface {
-                return new ListQuestionRequestValidator($container->get('settings.languages'));
+    private function getServices(): array
+    {
+        return [
+            CreateQuestionServiceInterface::class => static function (ContainerInterface $container): CreateQuestionServiceInterface {
+                return new CreateQuestionService(
+                    $container->get(QuestionRepositoryInterface::class),
+                    $container->get(QuestionJsonMapper::class)
+                );
             },
 
-            CreateQuestionRequestValidator::class => static function (ContainerInterface $container): RequestValidatorInterface {
-                return new CreateQuestionRequestValidator();
+            ListQuestionServiceInterface::class => static function (ContainerInterface $container): ListQuestionServiceInterface {
+                return new ListQuestionService($container->get(QuestionRepositoryInterface::class));
+            },
+        ];
+    }
+
+    private function getActions(): array
+    {
+        return [
+            CreateQuestionAction::class => static function (ContainerInterface $container): ActionInterface {
+                return new CreateQuestionAction(
+                    $container->get(CreateQuestionRequestValidator::class),
+                    $container->get(CreateQuestionServiceInterface::class),
+                    $container->get(QuestionNormalizer::class)
+                );
+            },
+
+            ListQuestionAction::class => static function (ContainerInterface $container): ActionInterface {
+                return new ListQuestionAction(
+                    $container->get(ListQuestionRequestValidator::class),
+                    $container->get(ListQuestionServiceInterface::class),
+                    $container->get(QuestionCollectionNormalizer::class)
+                );
             }
         ];
     }

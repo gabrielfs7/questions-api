@@ -8,6 +8,8 @@ A simple API to handle questions.
 composer install
 ```
 
+**Note**: Db files will be created by composer post-install.
+
 ### Initialize application
 
 ```

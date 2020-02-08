@@ -31,5 +31,11 @@
     "phpunit/phpunit": "^8.5",
     "behat/behat": "^3.5",
     "friendsofphp/php-cs-fixer": "^2.16"
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "cp -n db/questions.csv.example db/questions.csv",
+      "cp -n db/questions.json.example db/questions.json"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Questions\Test;
 
@@ -42,7 +42,7 @@ trait AppSupportTrait
     {
         $actual = $this->getParsedJsonResponse($response);
 
-        Assert::assertEquals(json_encode($expected, true), json_encode($actual, true));
+        Assert::assertEquals(json_encode($expected, JSON_OBJECT_AS_ARRAY), json_encode($actual, JSON_OBJECT_AS_ARRAY));
     }
 
     protected function assertResponseStatusCode(ResponseInterface $response, int $statusCode): void

@@ -5,7 +5,7 @@ namespace Questions\Infrastructure\Http;
 use JsonException;
 use Psr\Http\Message\ServerRequestInterface;
 
-class JsonRequestParser
+class JsonRequestParser implements RequestParserInterface
 {
     public function parse(ServerRequestInterface $request): array
     {
@@ -22,5 +22,10 @@ class JsonRequestParser
         }
 
         return $params;
+    }
+
+    public function isContentTypeSupported(string $contentType): bool
+    {
+        return $contentType === 'application/json';
     }
 }

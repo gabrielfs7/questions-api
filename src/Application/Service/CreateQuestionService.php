@@ -3,7 +3,7 @@
 namespace Questions\Application\Service;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Questions\Application\Middleware\ParseRequestMiddleware;
+use Questions\Application\Middleware\RequestParserMiddleware;
 use Questions\Domain\Entity\Question;
 use Questions\Domain\Repository\QuestionRepositoryInterface;
 use Questions\Infrastructure\Mapper\QuestionMapperInterface;
@@ -25,7 +25,7 @@ class CreateQuestionService
     public function create(ServerRequestInterface $request): Question
     {
         $question = $this->questionMapper
-            ->toObject($request->getAttribute(ParseRequestMiddleware::PARSED_REQUEST_DATA));
+            ->toObject($request->getAttribute(RequestParserMiddleware::PARSED_REQUEST_DATA));
 
         $this->repository->create($question);
 

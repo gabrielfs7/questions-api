@@ -3,17 +3,23 @@
 namespace Questions\Application\Normalizer;
 
 use Questions\Domain\Entity\Question;
+use Questions\Infrastructure\Translation\TranslatorInterface;
 
-class QuestionNormalizer implements NormalizerInterface
+class QuestionNormalizer extends AbstractNormalizer
 {
-    /**
-     * @var ChoiceCollectionNormalizer
-     */
+    /** @var ChoiceCollectionNormalizer */
     private $choiceCollectionNormalizer;
 
-    public function __construct(ChoiceCollectionNormalizer $choiceCollectionNormalizer)
+    /** @var TranslatorInterface */
+    private $translator;
+
+    public function __construct(
+        ChoiceCollectionNormalizer $choiceCollectionNormalizer,
+        TranslatorInterface $translator
+    )
     {
         $this->choiceCollectionNormalizer = $choiceCollectionNormalizer;
+        $this->translator = $translator;
     }
 
     /**
@@ -22,8 +28,14 @@ class QuestionNormalizer implements NormalizerInterface
      */
     public function normalize($question): array
     {
+        if ($this->translateToLang) {
+            $this->choiceCollectionNormalizer->translateTo($this->translateToLang);
+        }
+
         return [
-            'text' => $question->getText(),
+            'text' => $this->translateToLang
+                ? $this->translator->translate($question->getText(), $this->translateToLang)
+                : $question->getText(),
             'createdAt' => $question->getCreatedAt()->format(DATE_W3C),
             'choices' => $this->choiceCollectionNormalizer->normalize($question->getChoices()),
         ];

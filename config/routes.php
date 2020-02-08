@@ -2,14 +2,12 @@
 
 /** @var $app \Slim\App */
 
-use Questions\Application\Action\ListQuestionsAction;
+use Questions\Application\Action\ListQuestionAction;
 use Questions\Application\Action\CreateQuestionAction;
-use Questions\Application\Middleware\ParseRequestMiddleware;
-use Questions\Application\Middleware\QuestionSaveMiddleware;
+use Questions\Application\Middleware\RequestParserMiddleware;
 
 $container = $app->getContainer();
 
-$app->get('/questions', ListQuestionsAction::class);
+$app->get('/questions', ListQuestionAction::class);
 $app->post('/questions', CreateQuestionAction::class)
-    ->add($container->get(QuestionSaveMiddleware::class))
-    ->add($container->get(ParseRequestMiddleware::class));
+    ->add($container->get(RequestParserMiddleware::class));

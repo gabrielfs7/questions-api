@@ -3,6 +3,12 @@
 namespace Questions\Infrastructure\DI;
 
 use Psr\Container\ContainerInterface;
+use Questions\Application\Normalizer\ChoiceCollectionNormalizer;
+use Questions\Application\Normalizer\ChoiceNormalizer;
+use Questions\Application\Normalizer\QuestionNormalizer;
+use Questions\Application\Normalizer\NormalizerInterface;
+use Questions\Application\Request\Validator\ListQuestionRequestValidator;
+use Questions\Application\Request\Validator\RequestValidatorInterface;
 use Questions\Application\Service\CreateQuestionService;
 use Questions\Domain\Repository\DummyQuestionRepository;
 use Questions\Domain\Repository\QuestionRepositoryInterface;
@@ -13,6 +19,8 @@ use Questions\Infrastructure\Mapper\QuestionCsvMapper;
 use Questions\Infrastructure\Mapper\QuestionJsonMapper;
 use Questions\Infrastructure\Repository\QuestionCsvRepository;
 use Questions\Infrastructure\Repository\QuestionJsonRepository;
+use Questions\Infrastructure\Translation\Translator;
+use Questions\Infrastructure\Translation\TranslatorInterface;
 
 class ContainerProvider implements ContainerProviderInterface
 {
@@ -56,6 +64,27 @@ class ContainerProvider implements ContainerProviderInterface
                         $container->get(JsonRequestParser::class),
                     ]
                 );
+            },
+
+            TranslatorInterface::class => static function (ContainerInterface $container): TranslatorInterface {
+                return $container->get($container->get('settings.translatorClass'));
+            },
+
+            QuestionNormalizer::class => static function (ContainerInterface $container): NormalizerInterface {
+                return new QuestionNormalizer(
+                    $container->get(ChoiceCollectionNormalizer::class),
+                    $container->get(TranslatorInterface::class)
+                );
+            },
+
+            ChoiceNormalizer::class => static function (ContainerInterface $container): NormalizerInterface {
+                return new ChoiceNormalizer(
+                    $container->get(TranslatorInterface::class)
+                );
+            },
+
+            ListQuestionRequestValidator::class => static function (ContainerInterface $container): RequestValidatorInterface {
+                return new ListQuestionRequestValidator($container->get('settings.languages'));
             }
         ];
     }

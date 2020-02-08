@@ -2,17 +2,16 @@
 
 namespace Questions\Application\Middleware;
 
-use Questions\Infrastructure\Http\JsonRequestParser;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Questions\Infrastructure\Http\RequestParserInterface;
 
-class ParseRequestMiddleware implements MiddlewareInterface
+class RequestParserMiddleware implements MiddlewareInterface
 {
     public const PARSED_REQUEST_DATA = 'parsedRequestData';
 
-    /** @var JsonRequestParser */
+    /** @var RequestParserInterface */
     private $requestParser;
 
     public function __construct(RequestParserInterface $requestParser)

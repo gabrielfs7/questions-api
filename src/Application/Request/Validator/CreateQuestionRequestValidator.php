@@ -3,17 +3,17 @@
 namespace Questions\Application\Request\Validator;
 
 use DateTimeImmutable;
-use Questions\Application\Middleware\ParseRequestMiddleware;
+use Questions\Application\Middleware\RequestParserMiddleware;
 use Questions\Application\Request\Error\InvalidRequestException;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Webmozart\Assert\Assert;
 
-class QuestionRequestValidator implements RequestValidatorInterface
+class CreateQuestionRequestValidator implements RequestValidatorInterface
 {
     public function validate(ServerRequestInterface $request): void
     {
-        $params = $request->getAttribute(ParseRequestMiddleware::PARSED_REQUEST_DATA);
+        $params = $request->getAttribute(RequestParserMiddleware::PARSED_REQUEST_DATA);
 
         try {
             $dateErrorMessage = 'Question createdAt must be a valid date-time. %s given';

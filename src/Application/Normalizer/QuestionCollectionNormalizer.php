@@ -4,7 +4,7 @@ namespace Questions\Application\Normalizer;
 
 use Questions\Domain\Entity\QuestionCollection;
 
-class QuestionCollectionNormalizer implements NormalizerInterface
+class QuestionCollectionNormalizer extends AbstractNormalizer
 {
     /** @var QuestionNormalizer */
     private $questionNormalizer;
@@ -21,12 +21,18 @@ class QuestionCollectionNormalizer implements NormalizerInterface
      */
     public function normalize($questionList): array
     {
+        if ($this->translateToLang) {
+            $this->questionNormalizer->translateTo($this->translateToLang);
+        }
+
         $output = [];
 
         foreach ($questionList as $question) {
             $output[] = $this->questionNormalizer->normalize($question);
         }
 
-        return $output;
+        return [
+            'data' => $output
+        ];
     }
 }

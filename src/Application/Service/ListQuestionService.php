@@ -15,8 +15,8 @@ class ListQuestionService
         $this->questionRepository = $questionRepository;
     }
 
-    public function find(array $criteria): QuestionCollection
+    public function find(): QuestionCollection
     {
-        return $this->questionRepository->findAll($criteria);
+        return $this->questionRepository->findAll();
     }
 }

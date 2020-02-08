@@ -4,7 +4,7 @@ namespace Questions\Application\Normalizer;
 
 use Questions\Domain\Entity\ChoiceCollection;
 
-class ChoiceCollectionNormalizer implements NormalizerInterface
+class ChoiceCollectionNormalizer extends AbstractNormalizer
 {
     /** @var ChoiceNormalizer */
     private $choiceNormalizer;
@@ -22,6 +22,10 @@ class ChoiceCollectionNormalizer implements NormalizerInterface
     public function normalize($choiceCollection): array
     {
         $output = [];
+
+        if ($this->translateToLang) {
+            $this->choiceNormalizer->translateTo($this->translateToLang);
+        }
 
         foreach ($choiceCollection as $choice) {
             $output[] = $this->choiceNormalizer->normalize($choice);

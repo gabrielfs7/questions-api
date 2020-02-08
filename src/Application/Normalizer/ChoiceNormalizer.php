@@ -3,9 +3,18 @@
 namespace Questions\Application\Normalizer;
 
 use Questions\Domain\Entity\Choice;
+use Questions\Infrastructure\Translation\TranslatorInterface;
 
-class ChoiceNormalizer implements NormalizerInterface
+class ChoiceNormalizer extends AbstractNormalizer
 {
+    /** @var TranslatorInterface */
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * @param Choice $choice
      * @return array
@@ -13,7 +22,9 @@ class ChoiceNormalizer implements NormalizerInterface
     public function normalize($choice): array
     {
         return [
-            'text' => $choice->getText(),
+            'text' => $this->translateToLang
+                ? $this->translator->translate($choice->getText(), $this->translateToLang)
+                : $choice->getText(),
         ];
     }
 }

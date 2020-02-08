@@ -3,6 +3,7 @@
 namespace Questions\Test\Api;
 
 use Behat\Behat\Context\Context;
+use PHPUnit\Framework\Assert;
 use Psr\Http\Message\ResponseInterface;
 use Questions\Test\AppSupportTrait;
 use Questions\Test\DbSupportTrait;
@@ -16,7 +17,7 @@ class QuestionsFeatureContext implements Context
     protected $lang;
 
     /** @var array */
-    protected $question;
+    protected $currentQuestion;
 
     /** @var ResponseInterface */
     protected $response;
@@ -40,7 +41,7 @@ class QuestionsFeatureContext implements Context
         $choice2 = $choices[1] ?? null;
         $choice3 = $choices[2] ?? null;
 
-        $this->question = $this->createQuestion($text, $createdAt, $choice1, $choice2, $choice3);
+        $this->currentQuestion = $this->createQuestion($text, $createdAt, $choice1, $choice2, $choice3);
     }
 
     /**
@@ -69,7 +70,7 @@ class QuestionsFeatureContext implements Context
         string $choice3
     )
     {
-        $this->question = $this->createQuestion($text, $createdAt, $choice1, $choice2, $choice3);
+        $this->currentQuestion = $this->createQuestion($text, $createdAt, $choice1, $choice2, $choice3);
     }
 
     /**
@@ -81,7 +82,7 @@ class QuestionsFeatureContext implements Context
             'POST',
             '/questions',
             null,
-            $this->question,
+            $this->currentQuestion,
             [
                 'Content-Type' => 'application/json',
             ]
@@ -93,8 +94,16 @@ class QuestionsFeatureContext implements Context
      */
     public function newQuestionIsCreated(string $statusCode)
     {
-        $this->assertJsonResponseContains($this->response, $this->question);
+        $this->assertJsonResponseContains($this->response, $this->currentQuestion);
         $this->assertResponseStatusCode($this->response, (int)$statusCode);
+    }
+
+    /**
+     * @Given an invalid lang :arg1
+     */
+    public function givenAnInvalidLang(string $lang)
+    {
+        $this->lang = $lang;
     }
 
     /**
@@ -102,7 +111,7 @@ class QuestionsFeatureContext implements Context
      */
     public function givenALang(string $lang)
     {
-        $this->lang = $this->lang = $lang;
+        $this->lang = $lang;
     }
 
     /**
@@ -110,34 +119,30 @@ class QuestionsFeatureContext implements Context
      */
     public function userSubmitsGet()
     {
-        $this->response = $this->request(
-            'GET',
-            '/questions',
-            [
-                'lang' => $this->lang,
-            ],
-            [],
-            [
-                'Content-Type' => 'application/json',
-            ]
-        );
+        $this->response = $this->findQuestions();
     }
 
     /**
-     * @Then a response with status code :arg1 and JSON list with previous question :arg2, createdAt :arg3 and choices :arg4, :arg5, :arg6 is returned
+     * @Then a response with status code :arg1 and JSON list with previous questions :arg2 and choices :arg3 is returned
      */
-    public function aListOfQuestionIsReturned(
-        string $statusCode,
-        string $text,
-        string $createdAt,
-        string $choice1,
-        string $choice2,
-        string $choice3
-    )
+    public function aListOfQuestionIsReturned(string $statusCode, string $allQuestions, string $allChoices)
     {
-        $question = $this->createQuestion($text, $createdAt, $choice1, $choice2, $choice3);
+        $questions = explode(',', $allQuestions);
+        $choiceGroups = explode('#', $allChoices);
 
-        $this->assertJsonResponseContains($this->response, [$question]);
+        $updatedQuestions = json_decode((string)$this->findQuestions()->getBody(), true)['data'];
+
+        for ($i = 0; $i < count($questions); $i++) {
+            Assert::assertSame($questions[$i], $updatedQuestions[$i]['text']);
+
+            $choices = explode(',', $choiceGroups[$i]);
+
+            for ($j = 0; $j < count($updatedQuestions[$i]['choices']); $j++) {
+                Assert::assertSame($choices[$j], $updatedQuestions[$i]['choices'][$j]['text']);
+            }
+        }
+
+        $this->assertJsonResponseContains($this->response, ['data' => $updatedQuestions]);
         $this->assertResponseStatusCode($this->response, (int)$statusCode);
     }
 
@@ -158,6 +163,21 @@ class QuestionsFeatureContext implements Context
                         'text' => $choice3
                     ],
                 ]
+            ]
+        );
+    }
+
+    private function findQuestions(): ResponseInterface
+    {
+        return $this->request(
+            'GET',
+            '/questions',
+            [
+                'lang' => $this->lang,
+            ],
+            [],
+            [
+                'Content-Type' => 'application/json',
             ]
         );
     }

@@ -32,7 +32,7 @@ trait AppTestTrait
             ->write(json_encode($body));
 
         foreach ($headers as $headerKey => $headerValue) {
-            $request->withAddedHeader($headerKey, $headerValue);
+            $request = $request->withAddedHeader($headerKey, $headerValue);
         }
 
         return $this->getApp()->handle($request);

@@ -47,7 +47,10 @@ class QuestionsFeatureContext implements Context
             'POST',
             '/questions',
             null,
-            $this->question
+            $this->question,
+            [
+                'Content-Type' => 'application/json',
+            ]
         );
     }
 
@@ -78,6 +81,10 @@ class QuestionsFeatureContext implements Context
             '/questions',
             [
                 'lang' => $this->lang,
+            ],
+            [],
+            [
+                'Content-Type' => 'application/json',
             ]
         );
     }

@@ -3,9 +3,13 @@
 namespace Questions\Infrastructure\DI;
 
 use Psr\Container\ContainerInterface;
+use Questions\Domain\Repository\DummyQuestionRepository;
 use Questions\Domain\Repository\QuestionRepositoryInterface;
-use Questions\Infrastructure\Repository\QuestionsCsvQuestionRepository;
-use Questions\Infrastructure\Repository\QuestionsJsonQuestionRepository;
+use Questions\Infrastructure\Http\JsonRequestParser;
+use Questions\Infrastructure\Http\RequestParser;
+use Questions\Infrastructure\Http\RequestParserInterface;
+use Questions\Infrastructure\Repository\QuestionCsvRepository;
+use Questions\Infrastructure\Repository\QuestionJsonRepository;
 
 class ContainerProvider implements ContainerProviderInterface
 {
@@ -13,15 +17,31 @@ class ContainerProvider implements ContainerProviderInterface
     {
         return [
             QuestionRepositoryInterface::class => static function (ContainerInterface $container): QuestionRepositoryInterface {
-                return new QuestionsCsvQuestionRepository();
+                if ($container->get('settings.dataSource') === 'csv') {
+                    return $container->get(QuestionCsvRepository::class);
+                }
+
+                if ($container->get('settings.dataSource') === 'json') {
+                    return $container->get(QuestionJsonRepository::class);
+                }
+
+                return new DummyQuestionRepository();
             },
 
-            QuestionsCsvQuestionRepository::class => static function (ContainerInterface $container): QuestionRepositoryInterface {
-                return new QuestionsCsvQuestionRepository();
+            QuestionCsvRepository::class => static function (ContainerInterface $container): QuestionRepositoryInterface {
+                return new QuestionCsvRepository();
             },
 
-            QuestionsJsonQuestionRepository::class => static function (ContainerInterface $container): QuestionRepositoryInterface {
-                return new QuestionsJsonQuestionRepository();
+            QuestionJsonRepository::class => static function (ContainerInterface $container): QuestionRepositoryInterface {
+                return new QuestionJsonRepository();
+            },
+
+            RequestParserInterface::class => static function (ContainerInterface $container): RequestParserInterface {
+                return new RequestParser(
+                    ...[
+                        $container->get(JsonRequestParser::class),
+                    ]
+                );
             }
         ];
     }

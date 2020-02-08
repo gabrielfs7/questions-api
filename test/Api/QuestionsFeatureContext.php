@@ -27,9 +27,41 @@ class QuestionsFeatureContext implements Context
     }
 
     /**
+     * @Given a incorrect question with text :arg1, createdAt :arg2 and choices :arg3
+     */
+    public function givenAWrongQuestion(
+        ?string $text,
+        ?string $createdAt,
+        ?string $choices
+    )
+    {
+        $choices = explode(',', (string)$choices);
+        $choice1 = $choices[0] ?? null;
+        $choice2 = $choices[1] ?? null;
+        $choice3 = $choices[2] ?? null;
+
+        $this->question = $this->createQuestion($text, $createdAt, $choice1, $choice2, $choice3);
+    }
+
+    /**
+     * @Then a response with status code :arg1 and JSON error :arg2 is returned
+     */
+    public function newQuestionCannotBeCreated(string $statusCode, string $errorMessage)
+    {
+        $this->assertJsonResponseContains(
+            $this->response,
+            [
+                'code' => 0,
+                'message' => $errorMessage
+            ]
+        );
+        $this->assertResponseStatusCode($this->response, (int)$statusCode);
+    }
+
+    /**
      * @Given a question with text :arg1, createdAt :arg2 and choices :arg3, :arg4, :arg5
      */
-    public function giveANewQuestion(
+    public function givenANewQuestion(
         string $text,
         string $createdAt,
         string $choice1,
@@ -68,7 +100,7 @@ class QuestionsFeatureContext implements Context
     /**
      * @Given the lang :arg1
      */
-    public function giveALang(string $lang)
+    public function givenALang(string $lang)
     {
         $this->lang = $this->lang = $lang;
     }
@@ -109,22 +141,24 @@ class QuestionsFeatureContext implements Context
         $this->assertResponseStatusCode($this->response, (int)$statusCode);
     }
 
-    private function createQuestion(string $text, string $createdAt, string $choice1, string $choice2, string $choice3)
+    private function createQuestion(?string $text, ?string $createdAt, ?string $choice1, ?string $choice2, ?string $choice3)
     {
-        return [
-            'text' => $text,
-            'createdAt' => $createdAt,
-            'choices' => [
-                [
-                    'text' => $choice1
-                ],
-                [
-                    'text' => $choice2
-                ],
-                [
-                    'text' => $choice3
-                ],
+        return array_filter(
+            [
+                'text' => $text,
+                'createdAt' => $createdAt,
+                'choices' => [
+                    [
+                        'text' => $choice1
+                    ],
+                    [
+                        'text' => $choice2
+                    ],
+                    [
+                        'text' => $choice3
+                    ],
+                ]
             ]
-        ];
+        );
     }
 }

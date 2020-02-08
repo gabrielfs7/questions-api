@@ -2,6 +2,7 @@
 
 namespace Questions\Application\Request\Validator;
 
+use DateTimeImmutable;
 use Questions\Application\Middleware\ParseRequestMiddleware;
 use Questions\Application\Request\Error\InvalidRequestException;
 use InvalidArgumentException;
@@ -15,12 +16,16 @@ class QuestionRequestValidator implements RequestValidatorInterface
         $params = $request->getAttribute(ParseRequestMiddleware::PARSED_REQUEST_DATA);
 
         try {
-            Assert::stringNotEmpty($params['text'] ?? null, 'Question text must be a string. %s given');
-            Assert::string($params['createdAt'] ?? null, 'Question createdAt must be a date-time. %s given');
-            Assert::isArray($params['choices'] ?? null, 'Question choices must be an array. %s given');
-            Assert::count($params['choices'] ?? [], 3, 'Question choices be exactly 3. %s given');
+            $dateErrorMessage = 'Question createdAt must be a valid date-time. %s given';
 
-            $this->validateChoices($params['choices']);
+            Assert::stringNotEmpty($params['text'] ?? null, 'Question text must be a string. %s given');
+            Assert::stringNotEmpty($params['createdAt'] ?? null, $dateErrorMessage);
+
+            if (!$this->isValidateDate($params['createdAt'])) {
+                throw new InvalidArgumentException(sprintf($dateErrorMessage, $params['createdAt']));
+            }
+
+            $this->validateChoices((array)($params['choices'] ?? []));
         } catch (InvalidArgumentException $exception) {
             throw new InvalidRequestException($exception->getMessage());
         }
@@ -28,8 +33,21 @@ class QuestionRequestValidator implements RequestValidatorInterface
 
     private function validateChoices(array $choices): void
     {
+        Assert::count($choices, 3, 'Question choices be exactly 3. %s given');
+
         foreach ($choices as $choice) {
             Assert::stringNotEmpty($choice['text'] ?? null, 'Choice text must be a string. %s given');
+        }
+    }
+
+    private function isValidateDate(string $createdAt): bool
+    {
+        try {
+            (new DateTimeImmutable($createdAt));
+
+            return true;
+        } catch (\Throwable $exception) {
+            return false;
         }
     }
 }

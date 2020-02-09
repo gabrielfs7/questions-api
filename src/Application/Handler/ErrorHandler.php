@@ -4,7 +4,6 @@ namespace Questions\Application\Handler;
 
 use JsonException;
 use Questions\Application\Request\Error\InvalidRequestException;
-use Questions\Infrastructure\Http\Error\HttpAcceptNotSupportedException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Questions\Infrastructure\Http\RequestResponderInterface;
@@ -27,12 +26,13 @@ class ErrorHandler implements ErrorHandlerInterface
         bool $displayErrorDetails,
         bool $logErrors,
         bool $logErrorDetails
-    ): ResponseInterface {
+    ): ResponseInterface
+    {
         /**
          * @TODO Proper error logging must be implemented
          */
         $statusCode = 500;
-        $code = 0;
+        $code = 500;
         $message = $displayErrorDetails ? $exception->getMessage() : 'Internal Error';
 
         if ($exception instanceof InvalidRequestException || $exception instanceof JsonException) {
@@ -43,14 +43,6 @@ class ErrorHandler implements ErrorHandlerInterface
 
         if ($exception instanceof HttpNotFoundException) {
             $statusCode = 404;
-            $code = $exception->getCode();
-            $message = $exception->getMessage();
-        }
-
-        if ($exception instanceof HttpAcceptNotSupportedException) {
-            $request = $request->withHeader('Accept', RequestResponderInterface::DEFAULT_CONTENT_TYPE);
-
-            $statusCode = 406;
             $code = $exception->getCode();
             $message = $exception->getMessage();
         }

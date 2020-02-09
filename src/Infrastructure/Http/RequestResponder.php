@@ -4,16 +4,22 @@ namespace Questions\Infrastructure\Http;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Questions\Infrastructure\Http\Error\HttpAcceptNotSupportedException;
 
 class RequestResponder implements RequestResponderInterface
 {
+    /** @var RequestResponderInterface */
+    private $defaultRequestResponder;
+
     /** @var RequestResponderInterface[] */
     private $requestResponders;
 
-    public function __construct(RequestResponderInterface ...$requestResponders)
+    public function __construct(
+        RequestResponderInterface $defaultRequestResponder,
+        RequestResponderInterface ...$requestResponders
+    )
     {
         $this->requestResponders = $requestResponders;
+        $this->defaultRequestResponder = $defaultRequestResponder;
     }
 
     public function respond(ServerRequestInterface $request, int $statusCode, $content): ResponseInterface
@@ -27,8 +33,13 @@ class RequestResponder implements RequestResponderInterface
             }
         }
 
-        throw new HttpAcceptNotSupportedException(
-            sprintf('Content Accept %s is not supported as response', $acceptHeader)
+        return $this->defaultRequestResponder->respond(
+            $request,
+            406,
+            [
+                'code' => 406,
+                'message' => sprintf('Content Accept %s is not supported as response', $acceptHeader),
+            ]
         );
     }
 

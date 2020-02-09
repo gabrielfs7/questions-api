@@ -4,4 +4,5 @@ default:
     product_features:
       paths: [ '%paths.base%/test/Api' ]
       contexts:
-        - Questions\Test\Api\QuestionsFeatureContext
+        - Questions\Test\Api\QuestionFeatureContext
+        - Questions\Test\Api\InfrastructureFeatureContext

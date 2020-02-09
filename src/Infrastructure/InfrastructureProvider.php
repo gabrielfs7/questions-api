@@ -39,6 +39,7 @@ class InfrastructureProvider implements ContainerProviderInterface
         return [
             RequestResponderInterface::class => static function (ContainerInterface $container): RequestResponderInterface {
                 return new RequestResponder(
+                    $container->get(JsonRequestResponder::class),
                     ...[
                         $container->get(JsonRequestResponder::class)
                     ]

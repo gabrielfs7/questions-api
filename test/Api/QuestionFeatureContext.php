@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Questions\Test\AppSupportTrait;
 use Questions\Test\DbSupportTrait;
 
-class QuestionsFeatureContext implements Context
+class QuestionFeatureContext implements Context
 {
     use AppSupportTrait;
     use DbSupportTrait;

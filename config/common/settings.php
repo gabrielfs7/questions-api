@@ -4,6 +4,7 @@ use Questions\Infrastructure\Translation\Translator;
 
 return [
     'settings.displayErrorDetails' => false,
+    'settings.dataSource.type' => 'csv',
     'settings.translation.class' => Translator::class,
     'settings.translation.timeoutInSeconds' => 1,
     'settings.translation.languages' => [

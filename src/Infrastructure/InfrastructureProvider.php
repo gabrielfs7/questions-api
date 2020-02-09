@@ -3,8 +3,12 @@
 namespace Questions\Infrastructure;
 
 use GuzzleHttp\RequestOptions;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\SyslogHandler;
+use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Log\LoggerInterface;
 use Questions\Domain\Repository\QuestionRepositoryInterface;
 use Questions\Infrastructure\DI\ContainerProviderInterface;
 use Questions\Infrastructure\Http\JsonRequestParser;
@@ -27,11 +31,25 @@ class InfrastructureProvider implements ContainerProviderInterface
 
     public function register(): array
     {
-        return $this->getRequestResponders()
+        return $this->getRequestLoggers()
+            + $this->getRequestResponders()
             + $this->getTranslators()
             + $this->getRequestParsers()
             + $this->getRepositories()
             + $this->getPaths();
+    }
+
+    private function getRequestLoggers(): array
+    {
+        return [
+            LoggerInterface::class => static function (ContainerInterface $container): LoggerInterface {
+                return (new Logger('application'))
+                    ->pushHandler(
+                        (new SyslogHandler('questions', 'local6'))
+                            ->setFormatter(new LineFormatter("%channel%.%level_name%: %message% %extra%"))
+                    );
+            },
+        ];
     }
 
     private function getRequestResponders(): array
@@ -66,7 +84,10 @@ class InfrastructureProvider implements ContainerProviderInterface
             },
 
             Translator::class => static function (ContainerInterface $container): TranslatorInterface {
-                return new Translator($container->get(GoogleTranslate::class));
+                return new Translator(
+                    $container->get(GoogleTranslate::class),
+                    $container->get(LoggerInterface::class)
+                );
             },
 
             TranslatorInterface::class => static function (ContainerInterface $container): TranslatorInterface {

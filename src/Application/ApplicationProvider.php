@@ -3,6 +3,7 @@
 namespace Questions\Application;
 
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use Questions\Application\Action\ActionInterface;
 use Questions\Application\Action\CreateQuestionAction;
 use Questions\Application\Action\ListQuestionAction;
@@ -66,7 +67,10 @@ class ApplicationProvider implements ContainerProviderInterface
     {
         return [
             ErrorHandlerInterface::class => static function (ContainerInterface $container): ErrorHandlerInterface {
-                return new ErrorHandler($container->get(RequestResponderInterface::class));
+                return new ErrorHandler(
+                    $container->get(RequestResponderInterface::class),
+                    $container->get(LoggerInterface::class)
+                );
             },
         ];
     }

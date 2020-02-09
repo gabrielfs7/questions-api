@@ -2,6 +2,8 @@
 
 return [
     'settings.displayErrorDetails' => true,
+    'settings.logErrors' => true,
+    'settings.logErrorsErrorDetails' => true,
     'settings.dataSource' => [
         'csv' => [
             'path' => __DIR__ . '/../../db/questions.csv',

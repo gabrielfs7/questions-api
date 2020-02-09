@@ -16,8 +16,7 @@ class RequestResponder implements RequestResponderInterface
     public function __construct(
         RequestResponderInterface $defaultRequestResponder,
         RequestResponderInterface ...$requestResponders
-    )
-    {
+    ) {
         $this->requestResponders = $requestResponders;
         $this->defaultRequestResponder = $defaultRequestResponder;
     }

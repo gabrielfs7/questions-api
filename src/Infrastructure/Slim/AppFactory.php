@@ -43,7 +43,11 @@ class AppFactory
             }
         );
 
-        $errorHandler = $app->addErrorMiddleware($container->get('settings.displayErrorDetails'), false, false);
+        $errorHandler = $app->addErrorMiddleware(
+            $container->get('settings.displayErrorDetails'),
+            $container->get('settings.logErrors'),
+            $container->get('settings.logErrorsErrorDetails')
+        );
         $errorHandler->setDefaultErrorHandler($container->get(ErrorHandlerInterface::class));
 
         return $app;

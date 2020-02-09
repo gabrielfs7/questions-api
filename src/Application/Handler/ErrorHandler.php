@@ -3,6 +3,7 @@
 namespace Questions\Application\Handler;
 
 use JsonException;
+use Psr\Log\LoggerInterface;
 use Questions\Application\Request\Error\InvalidRequestException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -15,9 +16,15 @@ class ErrorHandler implements ErrorHandlerInterface
     /** @var RequestResponderInterface */
     private $requestResponder;
 
-    public function __construct(RequestResponderInterface $requestResponder)
-    {
+    /** @var LoggerInterface */
+    private $logger;
+
+    public function __construct(
+        RequestResponderInterface $requestResponder,
+        LoggerInterface $logger
+    ) {
         $this->requestResponder = $requestResponder;
+        $this->logger = $logger;
     }
 
     public function __invoke(
@@ -26,11 +33,7 @@ class ErrorHandler implements ErrorHandlerInterface
         bool $displayErrorDetails,
         bool $logErrors,
         bool $logErrorDetails
-    ): ResponseInterface
-    {
-        /**
-         * @TODO Proper error logging must be implemented
-         */
+    ): ResponseInterface {
         $statusCode = 500;
         $code = 500;
         $message = $displayErrorDetails ? $exception->getMessage() : 'Internal Error';
@@ -45,6 +48,16 @@ class ErrorHandler implements ErrorHandlerInterface
             $statusCode = 404;
             $code = $exception->getCode();
             $message = $exception->getMessage();
+        }
+
+        if ($logErrors) {
+            $context = [];
+
+            if ($logErrorDetails) {
+                $context['error'] = $exception->getMessage();
+            }
+
+            $this->logger->error($message, $context);
         }
 
         return $this->requestResponder->respond(

@@ -2,6 +2,7 @@
 
 namespace Questions\Infrastructure\Translation;
 
+use Psr\Log\LoggerInterface;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 use Throwable;
 
@@ -10,9 +11,13 @@ class Translator implements TranslatorInterface
     /** @var GoogleTranslate */
     private $googleTranslate;
 
-    public function __construct(GoogleTranslate $googleTranslate)
+    /** @var LoggerInterface */
+    private $logger;
+
+    public function __construct(GoogleTranslate $googleTranslate, LoggerInterface $logger)
     {
         $this->googleTranslate = $googleTranslate;
+        $this->logger = $logger;
     }
 
     public function translate(string $text, string $toLang): string
@@ -29,6 +34,8 @@ class Translator implements TranslatorInterface
                 ->setTarget($toLang)
                 ->translate($text);
         } catch (Throwable $exception) {
+            $this->logger->warning(sprintf('Could not translate. %s', $exception->getMessage()));
+
             return $text;
         }
     }

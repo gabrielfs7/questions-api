@@ -4,11 +4,15 @@ namespace Questions\Infrastructure;
 
 use GuzzleHttp\RequestOptions;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Questions\Domain\Repository\QuestionRepositoryInterface;
 use Questions\Infrastructure\DI\ContainerProviderInterface;
 use Questions\Infrastructure\Http\JsonRequestParser;
+use Questions\Infrastructure\Http\JsonRequestResponder;
 use Questions\Infrastructure\Http\RequestParser;
 use Questions\Infrastructure\Http\RequestParserInterface;
+use Questions\Infrastructure\Http\RequestResponder;
+use Questions\Infrastructure\Http\RequestResponderInterface;
 use Questions\Infrastructure\Mapper\QuestionCsvMapper;
 use Questions\Infrastructure\Mapper\QuestionJsonMapper;
 use Questions\Infrastructure\Repository\QuestionCsvRepository;
@@ -23,10 +27,28 @@ class InfrastructureProvider implements ContainerProviderInterface
 
     public function register(): array
     {
-        return $this->getTranslators()
+        return $this->getRequestResponders()
+            + $this->getTranslators()
             + $this->getRequestParsers()
             + $this->getRepositories()
             + $this->getPaths();
+    }
+
+    private function getRequestResponders(): array
+    {
+        return [
+            RequestResponderInterface::class => static function (ContainerInterface $container): RequestResponderInterface {
+                return new RequestResponder(
+                    ...[
+                        $container->get(JsonRequestResponder::class)
+                    ]
+                );
+            },
+
+            JsonRequestResponder::class => static function (ContainerInterface $container): RequestResponderInterface {
+                return new JsonRequestResponder($container->get(ResponseFactoryInterface::class));
+            },
+        ];
     }
 
     private function getTranslators(): array

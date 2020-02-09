@@ -6,6 +6,8 @@ use Psr\Container\ContainerInterface;
 use Questions\Application\Action\ActionInterface;
 use Questions\Application\Action\CreateQuestionAction;
 use Questions\Application\Action\ListQuestionAction;
+use Questions\Application\Handler\ErrorHandler;
+use Questions\Application\Handler\ErrorHandlerInterface;
 use Questions\Application\Middleware\MiddlewareInterface;
 use Questions\Application\Middleware\RequestParserMiddleware;
 use Questions\Application\Normalizer\ChoiceCollectionNormalizer;
@@ -24,6 +26,7 @@ use Questions\Domain\Repository\DummyQuestionRepository;
 use Questions\Domain\Repository\QuestionRepositoryInterface;
 use Questions\Infrastructure\DI\ContainerProviderInterface;
 use Questions\Infrastructure\Http\RequestParserInterface;
+use Questions\Infrastructure\Http\RequestResponderInterface;
 use Questions\Infrastructure\Mapper\QuestionJsonMapper;
 use Questions\Infrastructure\Repository\QuestionCsvRepository;
 use Questions\Infrastructure\Repository\QuestionJsonRepository;
@@ -34,6 +37,7 @@ class ApplicationProvider implements ContainerProviderInterface
     public function register(): array
     {
         return $this->getRepositories()
+            + $this->getErrorHandlers()
             + $this->getMiddlewares()
             + $this->getValidators()
             + $this->getNormalizers()
@@ -54,6 +58,15 @@ class ApplicationProvider implements ContainerProviderInterface
                 }
 
                 return new DummyQuestionRepository();
+            },
+        ];
+    }
+
+    public function getErrorHandlers(): array
+    {
+        return [
+            ErrorHandlerInterface::class => static function (ContainerInterface $container): ErrorHandlerInterface {
+                return new ErrorHandler($container->get(RequestResponderInterface::class));
             },
         ];
     }
@@ -126,6 +139,7 @@ class ApplicationProvider implements ContainerProviderInterface
             CreateQuestionAction::class => static function (ContainerInterface $container): ActionInterface {
                 return new CreateQuestionAction(
                     $container->get(CreateQuestionRequestValidator::class),
+                    $container->get(RequestResponderInterface::class),
                     $container->get(CreateQuestionServiceInterface::class),
                     $container->get(QuestionNormalizer::class)
                 );
@@ -134,6 +148,7 @@ class ApplicationProvider implements ContainerProviderInterface
             ListQuestionAction::class => static function (ContainerInterface $container): ActionInterface {
                 return new ListQuestionAction(
                     $container->get(ListQuestionRequestValidator::class),
+                    $container->get(RequestResponderInterface::class),
                     $container->get(ListQuestionServiceInterface::class),
                     $container->get(QuestionCollectionNormalizer::class)
                 );

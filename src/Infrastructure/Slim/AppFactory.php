@@ -2,7 +2,9 @@
 
 namespace Questions\Infrastructure\Slim;
 
-use Questions\Application\Handler\ErrorHandler;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Questions\Application\Handler\ErrorHandlerInterface;
 use Questions\Infrastructure\DI\ContainerProviderInterface;
 use DI\ContainerBuilder;
 use Slim\App;
@@ -34,8 +36,15 @@ class AppFactory
         $app = SlimAppFactory::create();
         $app->addRoutingMiddleware();
 
+        $container->set(
+            ResponseFactoryInterface::class,
+            static function (ContainerInterface $container) use ($app): ResponseFactoryInterface {
+                return $app->getResponseFactory();
+            }
+        );
+
         $errorHandler = $app->addErrorMiddleware($container->get('settings.displayErrorDetails'), false, false);
-        $errorHandler->setDefaultErrorHandler(new ErrorHandler($app->getResponseFactory()));
+        $errorHandler->setDefaultErrorHandler($container->get(ErrorHandlerInterface::class));
 
         return $app;
     }

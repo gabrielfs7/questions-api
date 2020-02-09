@@ -28,6 +28,35 @@ Access the application [here](http://localhost:8888).
 
 View it using [Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/gabrielfs7/questions-api/master/doc/openapi.yaml).
 
+### Requests
+
+Please, do not forget to use proper `Accept` and `Content-Type` headers to obtain proper response:
+
+```text
+POST /questions HTTP/1.1
+Host: localhost:8888
+Content-Type: application/json
+Accept: application/json
+cache-control: no-cache
+{
+    "text": "What is the answer?",
+    "createdAt": "2019-06-01T00:00:00+00:00",
+    "choices": [
+        {
+            "text": "Choice 1"
+        },
+        {
+            "text": "Choice 2"
+        },
+        {
+            "text": "Choice 3"
+        }
+    ]
+}
+```
+
+Currently the **content negotiation** supports only `application/json`.
+
 ## Configuration
 
 ### Setup storage Type

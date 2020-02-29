@@ -35,6 +35,9 @@
     "friendsofphp/php-cs-fixer": "^2.16"
   },
   "scripts": {
+    "test-bdd": [
+      "bin/behat"
+    ],
     "post-install-cmd": [
       "cp -n db/questions.csv.example db/questions.csv",
       "cp -n db/questions.json.example db/questions.json"
